@@ -77,10 +77,10 @@ def calc_ft_day_sinlastloan(contracts_json, date_start):
 
 if __name__ == "__main__":
     data = pd.read_csv(CONTRACT_FILE_PATH)
-    data['contracts'] = data['contracts'].apply(lambda x: parse_json(x) if pd.notnull(x) else [])
+    data['contracts_json'] = data['contracts'].apply(lambda x: parse_json(x) if pd.notnull(x) else [])
 
-    data['tot_claim_cnt_l180d'] = data.apply(lambda row: calc_ft_tot_claim_cnt_l180d(row["contracts"], row["date_start"]), axis=1)
-    data['disb_active_bank_loan_wo_tbc'] = data['contracts'].apply(calc_ft_disb_active_bank_loan_wo_tbc)
-    data['day_sinlastloan'] = data.apply(lambda row: calc_ft_day_sinlastloan(row['contracts'], row['date_start']), axis=1)
-
+    data['tot_claim_cnt_l180d'] = data.apply(lambda row: calc_ft_tot_claim_cnt_l180d(row["contracts_json"], row["date_start"]), axis=1)
+    data['disb_active_bank_loan_wo_tbc'] = data['contracts_json'].apply(calc_ft_disb_active_bank_loan_wo_tbc)
+    data['day_sinlastloan'] = data.apply(lambda row: calc_ft_day_sinlastloan(row['contracts_json'], row['date_start']), axis=1)
+    data.drop("contracts_json", axis=1) # Fix extra commas in output file
     data.to_csv(OUTPUT_PATH, index=False)
